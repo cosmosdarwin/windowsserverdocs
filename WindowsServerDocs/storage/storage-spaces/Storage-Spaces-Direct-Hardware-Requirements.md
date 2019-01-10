@@ -7,13 +7,13 @@ ms.manager: eldenc
 ms.technology: storage-spaces
 ms.topic: article
 author: eldenchristensen
-ms.date: 04/12/2018
+ms.date: 01/10/2019
 ms.localizationpriority: medium
 ---
 
 # Storage Spaces Direct hardware requirements
 
-> Applies to: Windows Server 2016, Windows Server Insider Preview
+> Applies to: Windows Server 2016, Windows Server 2019
 
 This topic describes minimum hardware requirements for Storage Spaces Direct.
 
@@ -26,7 +26,9 @@ For production, Microsoft recommends these [Windows Server Software-Defined](htt
 
 ## Base requirements
 
-Systems, components, devices, and drivers must be **Windows Server 2016 Certified** per the [Windows Server Catalog](https://www.windowsservercatalog.com). In addition, we recommend that servers, drives, host bus adapters, and network adapters have the **Software-Defined Data Center (SDDC) Standard** and/or **Software-Defined Data Center (SDDC) Premium** additional qualifications (AQs), as pictured below. There are over 1,000 components with the SDDC AQs.
+Systems, components, devices, and drivers must be certified for Windows Server per the [Windows Server Catalog](https://www.windowsservercatalog.com). To deploy Storage Spaces Direct with Windows Server 2016, systems, components, devices, and drivers must be **Windows Server 2016 Certified**; for Windows Server 2019, they must be **Windows Server 2019 Certified**.
+
+In addition, we recommend that servers, drives, host bus adapters, and network adapters have the **Software-Defined Data Center (SDDC) Standard** and/or **Software-Defined Data Center (SDDC) Premium** additional qualifications (AQs), as pictured below. There are over 1,700 components with the SDDC AQs for Windows Server 2016, and the catalog is growing quickly for Windows Server 2019.
 
 ![screenshot of the Windows Server catalog showing the SDDC AQs](media/hardware-requirements/sddc-aqs.png)
 
@@ -88,7 +90,7 @@ Here's how drives can be connected for Storage Spaces Direct:
 
 ![diagram of supported drive interconnects](media/hardware-requirements/drive-interconnect-support-1.png)
 
-Drives can be internal to the server, or in an external enclosure that is connected to just one server. SCSI Enclosure Services (SES) is required for slot mapping and identification. Each external enclosure must present a unique identifier (Unique ID).
+Drives can be internal to the server, or in an external enclosure that is connected to just one server. For Windows Server 2016, SCSI Enclosure Services (SES) is required for slot mapping and identification. For Windows Server 2019, it's not required, but still recommended. Each external enclosure must present a unique identifier (Unique ID).
 
 1. Drives internal to the server
 2. Drives in an external enclosure ("JBOD") connected to one server
@@ -113,7 +115,21 @@ Drives can be internal to the server, or in an external enclosure that is connec
    >[!NOTE]
    > This table provides the minimum for hardware deployments. If you're deploying with virtual machines and virtualized storage, such as in Microsoft Azure, see [Using Storage Spaces Direct in guest virtual machine clusters](storage-spaces-direct-in-vm.md).
 
-### Maximum capacity
+### Configuration maximums
 
-- Recommended: Maximum 100 terabytes (TB) raw storage capacity per server
-- Maximum 1 petabyte (1,000 TB) raw capacity in the storage pool
+Overall cluster:
+
+| Limit                        | Windows Server 2016       | Windows Server 2019       |
+|------------------------------|---------------------------|---------------------------|
+| Max servers per cluster      | 16                        | 16                        |
+| Max drives per cluster       | Suggested 400 or fewer¹   | Unlimited                 |
+| Max raw capacity per cluster | 1 PB (1,000 TB)           | 4 PB (4,000 TB)           |
+
+Per server:
+
+| Limit                        | Windows Server 2016       | Windows Server 2019       |
+|------------------------------|---------------------------|---------------------------|
+| Max drives per server        | Suggested 24 or fewer¹    | Unlimited                 |
+| Max raw capacity per server  | Suggested 100 TB or less¹ | Unlimited                 |
+
+1: These suggestions reflect what Microsoft regularly tests with Windows Server 2016, but they are not hard technical limits. It's permitted and supported to exceed these suggestions (for example, you can have more than 100 TB per server) if you're confident that your configuration is appropriate for the intended workload. For example, some archival-focused WSSD offers contain over 50 drives and 200 TB per server, given right-sized network bandwidth and foreknowledge that the workload won't be very active.
